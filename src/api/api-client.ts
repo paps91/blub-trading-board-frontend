@@ -5,7 +5,8 @@ export const apiClient = {
   get: async (endpoint: string) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'GET',
-      credentials: 'include',
+      // Retirez credentials pour le mode temporaire
+      // credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -21,7 +22,8 @@ export const apiClient = {
   post: async (endpoint: string, data: any) => {
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       method: 'POST',
-      credentials: 'include',
+      // Retirez credentials pour le mode temporaire
+      // credentials: 'include',
       headers: {
         'Content-Type': 'application/json',
       },
