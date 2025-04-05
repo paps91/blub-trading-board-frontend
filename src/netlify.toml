@@ -7,10 +7,19 @@
   from = "/*"
   to = "/index.html"
   status = 200
+  force = false
 
-# Headers pour permettre les cookies cross-origin
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "https://blub-trading-board.onrender.com"
-    Access-Control-Allow-Credentials = "true"
+# Proxy pour l'API
+[[redirects]]
+  from = "/api/*"
+  to = "https://blub-trading-board.onrender.com/api/:splat"
+  status = 200
+  force = true
+  headers = { X-From = "Netlify" }
+
+[[redirects]]
+  from = "/auth/*"
+  to = "https://blub-trading-board.onrender.com/auth/:splat"
+  status = 200
+  force = true
+  headers = { X-From = "Netlify" }
