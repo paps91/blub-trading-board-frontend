@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { apiClient } from "./api-client";
 
 interface TradingVolumeResponse {
   username: string | null;
@@ -35,21 +36,8 @@ export const useTradingVolumes = () => {
     queryKey: ["tradingVolumes"],
     queryFn: async () => {
       try {
-        const response = await fetch(
-          "http://localhost:8000/api/trading-volumes/"
-        );
-
-        console.log("Response status:", response.status, response.statusText);
-
-        if (!response.ok) {
-          throw new Error(
-            `Error while getting volumes: ${response.status} ${response.statusText}`
-          );
-        }
-
-        const data = await response.json();
+        const data = await apiClient.get("/api/trading-volumes/");
         console.log("Data received:", data);
-
         return data;
       } catch (error) {
         console.error("Error:", error);
@@ -68,25 +56,8 @@ export const useWalletTradingVolumes = (walletAddress: string | null) => {
       }
 
       try {
-        const response = await fetch(
-          `http://localhost:8000/api/trading-volumes/${walletAddress}`
-        );
-
-        console.log(
-          "Wallet volumes response status:",
-          response.status,
-          response.statusText
-        );
-
-        if (!response.ok) {
-          throw new Error(
-            `Error while getting wallet volumes: ${response.status} ${response.statusText}`
-          );
-        }
-
-        const data = await response.json();
+        const data = await apiClient.get(`/api/trading-volumes/${walletAddress}`);
         console.log("Wallet volumes data received:", data);
-
         return data;
       } catch (error) {
         console.error("Error fetching wallet trading volumes:", error);

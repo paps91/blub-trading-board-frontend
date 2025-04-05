@@ -1,4 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { apiClient } from "./api-client";
 
 export const useLinkWallet = () => {
   const queryClient = useQueryClient();
@@ -8,46 +9,22 @@ export const useLinkWallet = () => {
       console.log("Try to link wallet", walletAddress);
 
       const isValidAddress = /^0x[a-fA-F0-9]{40}$/.test(walletAddress);
-      console.log("Is address valid :", isValidAddress, walletAddress);
+      console.log("Is address valid:", isValidAddress, walletAddress);
 
       if (!isValidAddress) {
         console.error("Address does not match required format");
+        throw new Error("Invalid wallet address format");
       }
 
       try {
-        const response = await fetch("http://localhost:8000/api/wallet/link", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ wallet_address: walletAddress }),
-          credentials: "include",
-        });
-
-        console.log("Response status:", response.status, response.statusText);
-
-        const responseData = await response.json().catch((e) => {
-          console.error("Error while reading body", e);
-          return null;
-        });
-
-        console.log("Boyd response", responseData);
-
-        if (!response.ok) {
-          throw new Error(
-            `Error: ${response.status} ${response.statusText}` +
-              (responseData?.detail ? ` - ${responseData.detail}` : "")
-          );
-        }
-
-        return responseData;
+        return await apiClient.post("/api/wallet/link", { wallet_address: walletAddress });
       } catch (error) {
         console.error("Complete error:", error);
         throw error;
       }
     },
     onSuccess: (data) => {
-      console.log("Wallet successfuly linked", data);
+      console.log("Wallet successfully linked", data);
       queryClient.invalidateQueries({ queryKey: ["currentUser"] });
       queryClient.invalidateQueries({ queryKey: ["tradingVolumes"] });
     },
